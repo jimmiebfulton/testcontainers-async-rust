@@ -66,6 +66,7 @@ impl Image for PostgresImage {
     }
 }
 
+#[derive(Debug)]
 pub struct PostgresContainer {
     handle: ContainerHandle,
     settings: ContainerSettings,

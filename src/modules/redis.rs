@@ -33,6 +33,7 @@ impl Image for RedisImage {
     }
 }
 
+#[derive(Debug)]
 pub struct RedisContainer {
     handle: ContainerHandle,
     settings: ContainerSettings,

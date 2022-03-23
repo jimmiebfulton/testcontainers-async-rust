@@ -26,6 +26,7 @@ impl Image for ExampleImage {
     }
 }
 
+#[derive(Debug)]
 pub struct ExampleContainer {
     handle: ContainerHandle,
     settings: ContainerSettings,

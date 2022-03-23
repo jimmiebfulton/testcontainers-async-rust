@@ -26,6 +26,7 @@ impl Image for GenericImage {
     }
 }
 
+#[derive(Debug)]
 pub struct GenericContainer {
     handle: ContainerHandle,
     settings: ContainerSettings,

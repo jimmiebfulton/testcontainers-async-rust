@@ -10,7 +10,7 @@ use crate::bollard::Docker;
 use crate::task::Task;
 use crate::{async_trait, Container, ContainerHandle, TestcontainerError};
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum DropAction {
     Remove,
     Retain,
@@ -138,7 +138,7 @@ impl ImageSettings {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Qualifier {
     Tag(String),
     Digest(String),

@@ -24,6 +24,7 @@ impl Default for CockroachDbImage {
     }
 }
 
+#[derive(Debug)]
 pub struct CockroachDbContainer {
     handle: ContainerHandle,
     settings: ContainerSettings,

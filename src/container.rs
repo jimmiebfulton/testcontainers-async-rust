@@ -2,6 +2,7 @@ use crate::bollard::container::{InspectContainerOptions, RemoveContainerOptions}
 use crate::bollard::Docker;
 use async_trait::async_trait;
 use std::collections::HashMap;
+use std::fmt::Debug;
 
 pub use crate::errors::TestcontainerError;
 use crate::{DropAction, ImageSettings, Qualifier, Task};
@@ -9,7 +10,7 @@ use crate::{DropAction, ImageSettings, Qualifier, Task};
 const TESTCONTAINERS_DROP_ACTION: &str = "TESTCONTAINERS_DROP_ACTION";
 
 #[async_trait]
-pub trait Container: Sized {
+pub trait Container: Sized + Debug {
     fn attach(handle: ContainerHandle, settings: ContainerSettings) -> Self;
 
     fn handle(&self) -> &ContainerHandle;
@@ -72,6 +73,7 @@ pub trait Container: Sized {
     }
 }
 
+#[derive(Debug)]
 pub struct ContainerHandle {
     id: String,
     docker: Docker,
@@ -184,6 +186,7 @@ impl Drop for ContainerHandle {
     }
 }
 
+#[derive(Debug)]
 pub struct ContainerSettings {
     name: String,
     qualifier: Qualifier,

@@ -57,6 +57,7 @@ impl Image for MySqlImage {
     }
 }
 
+#[derive(Debug)]
 pub struct MySqlContainer {
     handle: ContainerHandle,
     settings: ContainerSettings,
