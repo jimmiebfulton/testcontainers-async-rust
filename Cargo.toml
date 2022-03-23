@@ -13,9 +13,13 @@ async-trait = "0.1.52"
 bollard = "= 0.11.0"
 bollard-stubs = "= 1.41.0"
 futures = "0.3"
+log = "0.4"
 thiserror = "1.0"
 tokio = {version = "1.17.0", features = ["rt","macros"]}
 
+[dev-dependencies]
+env_logger = "0.8"
+
 [[test]]
 name = "integration"
-path = "tests/lib.rs"
+path = "tests/integration/lib.rs"

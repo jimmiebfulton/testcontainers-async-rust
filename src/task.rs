@@ -1,7 +1,8 @@
 use crate::{async_trait, ContainerHandle, TestcontainerError};
+use std::fmt::Debug;
 
 #[async_trait]
-pub trait Task: 'static + Send + Sync {
+pub trait Task: 'static + Send + Sync + Debug {
     type Return;
 
     async fn execute(&self, handle: &ContainerHandle) -> Result<Self::Return, TestcontainerError>;

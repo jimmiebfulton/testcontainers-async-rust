@@ -12,8 +12,13 @@ use testcontainers_async::{
     AdminContainer, Container, DatabaseContainer, Image, ServiceContainer, TestcontainerError,
 };
 
+fn init() {
+    let _ = env_logger::builder().try_init();
+}
+
 #[tokio::test]
 async fn test_generic() -> Result<(), TestcontainerError> {
+    init();
     let redis = GenericImage::new("redis", "latest")
         .with_task(MatchLogOutput::containing("Ready to accept connections"))
         .start_container()
@@ -27,6 +32,7 @@ async fn test_generic() -> Result<(), TestcontainerError> {
 
 #[tokio::test]
 async fn test_redis() -> Result<(), TestcontainerError> {
+    init();
     let redis = RedisImage::default().start_container().await?;
 
     let port = redis.service_port().await?;
@@ -37,6 +43,7 @@ async fn test_redis() -> Result<(), TestcontainerError> {
 
 #[tokio::test]
 async fn test_postgres() -> Result<(), TestcontainerError> {
+    init();
     let postgres = PostgresImage::default()
         .with_database("example-service")
         .with_username("test")
@@ -56,6 +63,7 @@ async fn test_postgres() -> Result<(), TestcontainerError> {
 
 #[tokio::test]
 async fn test_cockroach() -> Result<(), TestcontainerError> {
+    init();
     let crdb = CockroachDbImage::default().start_container().await?;
 
     let service_port = crdb.service_port().await?;
@@ -69,6 +77,7 @@ async fn test_cockroach() -> Result<(), TestcontainerError> {
 
 #[tokio::test]
 async fn test_mysql() -> Result<(), TestcontainerError> {
+    init();
     let mysql = MySqlImage::default()
         .with_database("example-service")
         .with_username("test")
@@ -83,6 +92,7 @@ async fn test_mysql() -> Result<(), TestcontainerError> {
 
 #[tokio::test]
 async fn test_example_impl() -> Result<(), TestcontainerError> {
+    init();
     let example = ExampleImage::default().start_container().await?;
 
     let port = example.primary_port().await.expect("Port expected");

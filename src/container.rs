@@ -1,9 +1,11 @@
-use crate::bollard::container::{InspectContainerOptions, RemoveContainerOptions};
-use crate::bollard::Docker;
-use async_trait::async_trait;
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+use async_trait::async_trait;
+use log::{error, info, warn};
+
+use crate::bollard::container::{InspectContainerOptions, RemoveContainerOptions};
+use crate::bollard::Docker;
 pub use crate::errors::TestcontainerError;
 use crate::{DropAction, ImageSettings, Qualifier, Task};
 
@@ -121,7 +123,7 @@ impl Drop for ContainerHandle {
                 "remove" => drop_action = DropAction::Remove,
                 "retain" => drop_action = DropAction::Retain,
                 "stop" => drop_action = DropAction::Stop,
-                value => eprintln!(
+                value => warn!(
                     "'{}' is not a valid value for {}",
                     value, TESTCONTAINERS_DROP_ACTION
                 ),
@@ -136,7 +138,7 @@ impl Drop for ContainerHandle {
                 std::thread::spawn(move || {
                     let rt = tokio::runtime::Runtime::new().unwrap();
                     rt.block_on(async {
-                        eprintln!("Removing container {id}");
+                        info!("Removing container {}", &id[..12]);
                         let result = docker
                             .remove_container(
                                 id.as_str(),
@@ -150,7 +152,7 @@ impl Drop for ContainerHandle {
                         match result {
                             Ok(_) => {}
                             Err(error) => {
-                                eprintln!("Error removing container by id '{id}': {error}");
+                                error!("Error removing container by id '{}': {error}", &id[..12]);
                             }
                         }
 
@@ -159,7 +161,7 @@ impl Drop for ContainerHandle {
                 });
                 let _ = receiver.recv();
             }
-            DropAction::Retain => println!("Retaining container {}", self.id),
+            DropAction::Retain => info!("Retaining container {}", &self.id[..12]),
             DropAction::Stop => {
                 let id = self.id.clone();
                 let docker = self.docker.clone();
@@ -167,13 +169,13 @@ impl Drop for ContainerHandle {
                 std::thread::spawn(move || {
                     let rt = tokio::runtime::Runtime::new().unwrap();
                     rt.block_on(async {
-                        eprintln!("Stopping container {id}");
+                        info!("Stopping container {id}");
                         let result = docker.stop_container(id.as_str(), None).await;
 
                         match result {
                             Ok(_) => {}
                             Err(error) => {
-                                eprintln!("Error stopping container by id '{id}': {error}");
+                                error!("Error stopping container by id '{}': {error}", &id[..12]);
                             }
                         }
 

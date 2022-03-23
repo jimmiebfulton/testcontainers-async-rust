@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 
 use futures::TryStreamExt;
+use log::{debug, info};
 
 use crate::bollard::container::Config;
 use crate::bollard::image::CreateImageOptions;
@@ -256,7 +257,7 @@ pub trait Image: Sized {
         match inspect_result {
             Ok(_) => (),
             Err(_) => {
-                eprintln!("Pulling image {}", self.settings().fullname());
+                info!("Pulling image {}", self.settings().fullname());
                 docker
                     .create_image(
                         Some(CreateImageOptions {
@@ -307,6 +308,8 @@ pub trait Image: Sized {
             ..Default::default()
         };
 
+        debug!("Creating container for {}", self.settings().fullname());
+
         let id = docker
             .create_container::<&str, String>(None, image_config)
             .await?
@@ -315,10 +318,22 @@ pub trait Image: Sized {
     }
 
     async fn on_start_container(&self, handle: &ContainerHandle) -> Result<(), TestcontainerError> {
+        debug!(
+            "Starting {} ({})",
+            &handle.id()[..12],
+            self.settings().fullname()
+        );
+
         handle
             .docker()
             .start_container::<String>(handle.id(), None)
             .await?;
+
+        info!(
+            "Started {} ({})",
+            &handle.id()[..12],
+            self.settings().fullname()
+        );
 
         Ok(())
     }
