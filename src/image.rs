@@ -318,8 +318,8 @@ pub trait Image: Sized {
     }
 
     async fn on_start_container(&self, handle: &ContainerHandle) -> Result<(), TestcontainerError> {
-        debug!(
-            "Starting {} ({})",
+        info!(
+            "Starting: {} ({})",
             &handle.id()[..12],
             self.settings().fullname()
         );
@@ -330,7 +330,7 @@ pub trait Image: Sized {
             .await?;
 
         info!(
-            "Started {} ({})",
+            "Started: {} ({})",
             &handle.id()[..12],
             self.settings().fullname()
         );
@@ -339,9 +339,19 @@ pub trait Image: Sized {
     }
 
     async fn on_execute_tasks(&self, handle: &ContainerHandle) -> Result<(), TestcontainerError> {
+        debug!(
+            "Applying tasks: {} ({})",
+            &handle.id()[..12],
+            self.settings().fullname()
+        );
         for task in self.settings().tasks() {
             task.execute(handle).await?;
         }
+        info!(
+            "Ready: {} ({})",
+            &handle.id()[..12],
+            self.settings().fullname()
+        );
         Ok(())
     }
 
